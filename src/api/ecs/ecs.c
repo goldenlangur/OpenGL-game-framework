@@ -1,3 +1,4 @@
+#include "api/api.h"
 #include "api/ecs/ecs.h"
 
 void ecs_init(ecs_s *ecs)
@@ -40,7 +41,7 @@ entity_t ecs_create_entity(ecs_s *ecs, const char *name)
         }
         if (e == 0)
         {
-            printf("[ERROR]: Maximum amount of entities reached!\n");
+            printf(LOG_ERROR"[ecs]: maximum amount of entities reached!\n");
         }
     }
     ecs->data_components[e].name = name;
@@ -69,17 +70,3 @@ void ecs_exit(ecs_s *ecs)
         ecs_reset_entity_values(ecs, e);
     } 
 }
-
-/*
-
-    ecs_init(&ecs);
-
-    player_entity = ecs_create_entity(&ecs, "player");
-    ecs.transform_components[player_entity].position = (vec2_t){2, 4};
-    ecs.transform_components[player_entity].position.x += 0.002;
-
-    ecs_update(&ecs);
-
-    player_entity = ecs_delete_entity(&ecs, &player_entity);
-
- */

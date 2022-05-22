@@ -1,5 +1,4 @@
-#include <stdio.h>
-
+#include "api/pch.h"
 #include "api/graphics/graphics.h"
 
 void window_init(window_s* window_p)
@@ -7,9 +6,12 @@ void window_init(window_s* window_p)
     window_p->closed = 1;
 
     if(!glfwInit())
-        printf("[ERROR]: Failed to init GLFW!\n");
+    {
+        printf(LOG_ERROR"[OPENGL]: failed to init GLFW!\n");
+        exit(-1);
+    }
     else
-        printf("[INFO]: Initialized GLFW!\n");
+        printf(LOG_INFO"[OPENGL]: initialized GLFW!\n");
     
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -22,9 +24,9 @@ void window_init(window_s* window_p)
     glfwMakeContextCurrent(window_p->glfw);
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        printf("[ERROR]: Failed to init GLAD!\n");
+        printf(LOG_ERROR"[OPENGL]: failed to init GLAD!\n");
     else
-        printf("[INFO]: Initialized GLAD!\n");
+        printf(LOG_INFO"[OPENGL]: initialized GLAD!\n");
 
     if(window_p == NULL)
         printf("[ERROR]: Failed to create GLFW window!\n");

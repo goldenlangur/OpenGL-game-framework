@@ -27,10 +27,6 @@ typedef struct
 } mat4_t;
 
 mat4_t mat4_new(const float value);
-vec2_t vec2_new(const float x, const float y);
-vec3_t vec3_new(const float x, const float y, const float z);
-vec4_t vec4_new(const float x, const float y, const float z, const float w);
-
 float vec2_dot(const vec2_t a, const vec2_t b);
 
 mat4_t mat4_ortho(const float left, const float right, const float top, const float bottom, const float far, const float near);

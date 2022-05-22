@@ -1,11 +1,5 @@
 #pragma once
 
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
-
-#include "api/math/math.h"
-
 #define MAX_ENTITIES 1000
 // Entity Component System
 typedef unsigned int entity_t;

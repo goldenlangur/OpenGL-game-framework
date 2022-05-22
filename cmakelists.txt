@@ -7,7 +7,6 @@ include_directories(dep)
 add_library(glad "dep/glad/glad.c")
 link_directories(dep/glfw)
 
-
 include_directories(src)
 add_executable(game
 src/main/main.c
@@ -17,7 +16,9 @@ src/api/math/math.c
 
 src/api/graphics/window.c
 src/api/graphics/renderer.c
+src/api/graphics/texture.c
 )
+
 
 target_link_libraries(game 
 glfw3 
@@ -25,3 +26,5 @@ glad
 ${OPENGL_LIBRARIES}
 "-framework Cocoa"
 "-framework IOKit")
+
+target_precompile_headers(game PUBLIC "src/api/pch.h")

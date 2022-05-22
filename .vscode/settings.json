@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "math.h": "c",
+        "ratio": "c",
+        "__locale": "c",
+        "loop.h": "c",
+        "window.h": "c",
+        "renderer.h": "c",
+        "stb_image.h": "c",
+        "graphics.h": "c",
+        "api.h": "c"
+    }
+}
