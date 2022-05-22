@@ -1,0 +1,31 @@
+{
+    "files.associations": {
+        "__bit_reference": "c",
+        "__string": "c",
+        "cstring": "c",
+        "__node_handle": "cpp",
+        "main.h": "c",
+        "stdio.h": "c",
+        "ecs.h": "c",
+        "sdl_main.h": "c",
+        "math.h": "c",
+        "sdl.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "vector": "c",
+        "iterator": "c",
+        "algorithm": "c",
+        "game.h": "c",
+        "__hash_table": "c",
+        "__split_buffer": "c",
+        "bitset": "c",
+        "initializer_list": "c",
+        "unordered_map": "c",
+        "utility": "c",
+        "graphics.h": "c",
+        "loop.h": "c",
+        "sdl_image.h": "c",
+        "__locale": "c"
+    }
+}

@@ -1,0 +1,27 @@
+project(game)
+cmake_minimum_required(VERSION 3.21.1)
+
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIRS})
+include_directories(dep)
+add_library(glad "dep/glad/glad.c")
+link_directories(dep/glfw)
+
+
+include_directories(src)
+add_executable(game
+src/main/main.c
+
+src/api/ecs/ecs.c
+src/api/math/math.c
+
+src/api/graphics/window.c
+src/api/graphics/renderer.c
+)
+
+target_link_libraries(game 
+glfw3 
+glad 
+${OPENGL_LIBRARIES}
+"-framework Cocoa"
+"-framework IOKit")

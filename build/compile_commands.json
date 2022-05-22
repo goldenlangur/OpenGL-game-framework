@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/Users/liamcreed/Documents/c/project/build",
+  "command": "/usr/bin/clang  -I/Users/liamcreed/Documents/c/project/dep -I/Users/liamcreed/Documents/c/project/src -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -o CMakeFiles/glad.dir/dep/glad/glad.c.o -c /Users/liamcreed/Documents/c/project/dep/glad/glad.c",
+  "file": "/Users/liamcreed/Documents/c/project/dep/glad/glad.c"
+},
+{
+  "directory": "/Users/liamcreed/Documents/c/project/build",
+  "command": "/usr/bin/clang  -I/Users/liamcreed/Documents/c/project/dep -I/Users/liamcreed/Documents/c/project/src -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -o CMakeFiles/game.dir/src/main/main.c.o -c /Users/liamcreed/Documents/c/project/src/main/main.c",
+  "file": "/Users/liamcreed/Documents/c/project/src/main/main.c"
+},
+{
+  "directory": "/Users/liamcreed/Documents/c/project/build",
+  "command": "/usr/bin/clang  -I/Users/liamcreed/Documents/c/project/dep -I/Users/liamcreed/Documents/c/project/src -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -o CMakeFiles/game.dir/src/api/ecs/ecs.c.o -c /Users/liamcreed/Documents/c/project/src/api/ecs/ecs.c",
+  "file": "/Users/liamcreed/Documents/c/project/src/api/ecs/ecs.c"
+},
+{
+  "directory": "/Users/liamcreed/Documents/c/project/build",
+  "command": "/usr/bin/clang  -I/Users/liamcreed/Documents/c/project/dep -I/Users/liamcreed/Documents/c/project/src -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -o CMakeFiles/game.dir/src/api/math/math.c.o -c /Users/liamcreed/Documents/c/project/src/api/math/math.c",
+  "file": "/Users/liamcreed/Documents/c/project/src/api/math/math.c"
+},
+{
+  "directory": "/Users/liamcreed/Documents/c/project/build",
+  "command": "/usr/bin/clang  -I/Users/liamcreed/Documents/c/project/dep -I/Users/liamcreed/Documents/c/project/src -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -o CMakeFiles/game.dir/src/api/graphics/window.c.o -c /Users/liamcreed/Documents/c/project/src/api/graphics/window.c",
+  "file": "/Users/liamcreed/Documents/c/project/src/api/graphics/window.c"
+},
+{
+  "directory": "/Users/liamcreed/Documents/c/project/build",
+  "command": "/usr/bin/clang  -I/Users/liamcreed/Documents/c/project/dep -I/Users/liamcreed/Documents/c/project/src -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -o CMakeFiles/game.dir/src/api/graphics/renderer.c.o -c /Users/liamcreed/Documents/c/project/src/api/graphics/renderer.c",
+  "file": "/Users/liamcreed/Documents/c/project/src/api/graphics/renderer.c"
+}
+]
