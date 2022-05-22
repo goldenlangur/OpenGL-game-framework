@@ -1,3 +1,3 @@
 #quoakka engine
 
-![alt text](http://assets.stickpng.com/images/5c9b3ec073ce21029beb8d79.png)
+![alt text](https://hetisdemerckx.be/wp-content/uploads/2020/03/Quokka-cover-scaled.jpg)
