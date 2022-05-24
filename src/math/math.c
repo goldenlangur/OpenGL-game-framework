@@ -1,5 +1,5 @@
-#include "api/pch.h"
-#include "api/math/math.h"
+#include "pch.h"
+#include "math/math.h"
 
 float vec2_dot(const vec2_t a, const vec2_t b)
 {

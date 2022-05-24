@@ -1,9 +1,9 @@
 cd build
 cmake ..
 make
-mv game ../game
-cd ../game
-./game
+mv quokka ../quokka
+cd ../quokka
+./quokka
 cd ..
 
 

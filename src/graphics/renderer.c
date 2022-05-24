@@ -1,5 +1,5 @@
-#include "api/pch.h"
-#include "api/graphics/graphics.h"
+#include "pch.h"
+#include "graphics/graphics.h"
 
 void renderer_init(renderer_s *renderer)
 {
@@ -138,7 +138,9 @@ void renderer_start(renderer_s *renderer)
     renderer->vertex_buffer_ptr = renderer->vertex_buffer;
     renderer->index_count = 0;
     renderer->tex_slot_count = 1;
-
+}
+void renderer_end(renderer_s *renderer)
+{
     int loc = glGetUniformLocation(renderer->shader, "u_view_mat");
     if (loc == -1)
     {
@@ -154,9 +156,7 @@ void renderer_start(renderer_s *renderer)
         exit(-1);
     }
     glUniformMatrix4fv(loc, 1, GL_TRUE, &renderer->proj_mat.data[0][0]);
-}
-void renderer_end(renderer_s *renderer)
-{
+    
     uint32_t size = (uint8_t *)renderer->vertex_buffer_ptr - (uint8_t *)renderer->vertex_buffer;
     glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, renderer->vertex_buffer);

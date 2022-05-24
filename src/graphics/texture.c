@@ -1,5 +1,5 @@
-#include "api/pch.h"
-#include "api/graphics/graphics.h"
+#include "pch.h"
+#include "graphics/graphics.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>

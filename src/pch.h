@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "api/math/math.h"
+#include "math/math.h"
 
 #define LOG_ERROR   "\033[31m[ERROR]: \033[0m"
 #define LOG_WARNING "\033[33m[WARNING]: \033[0m"

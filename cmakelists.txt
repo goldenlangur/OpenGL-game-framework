@@ -1,4 +1,4 @@
-project(game)
+project(quokka)
 cmake_minimum_required(VERSION 3.21.1)
 
 find_package(OpenGL REQUIRED)
@@ -8,23 +8,22 @@ add_library(glad "dep/glad/glad.c")
 link_directories(dep/glfw)
 
 include_directories(src)
-add_executable(game
+add_executable(quokka
 src/main/main.c
 
-src/api/ecs/ecs.c
-src/api/math/math.c
+src/ecs/ecs.c
+src/math/math.c
 
-src/api/graphics/window.c
-src/api/graphics/renderer.c
-src/api/graphics/texture.c
+src/graphics/window.c
+src/graphics/renderer.c
+src/graphics/texture.c
 )
 
-
-target_link_libraries(game 
+target_link_libraries(quokka 
 glfw3 
 glad 
 ${OPENGL_LIBRARIES}
 "-framework Cocoa"
 "-framework IOKit")
 
-target_precompile_headers(game PUBLIC "src/api/pch.h")
+target_precompile_headers(quokka PUBLIC "src/pch.h")

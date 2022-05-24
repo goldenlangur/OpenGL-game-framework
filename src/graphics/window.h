@@ -4,7 +4,7 @@ typedef struct
 {
     const char* title;
     vec2_t size;
-    int closed, minimized, fullscreen, vsync;
+    bool closed, minimized, fullscreen, vsync;
     GLFWwindow* glfw;
 }window_s;
 
@@ -152,6 +152,6 @@ typedef enum mouse_button
     MOUSE_BUTTON_MIDDLE  =  MOUSE_BUTTON_3
 }mouse_button;
 
-int key_pressed(window_s* window_p, key key);
-int mouse_button_pressed(window_s* window_p, mouse_button button);
+bool key_pressed(window_s* window_p, key key);
+bool mouse_button_pressed(window_s* window_p, mouse_button button);
 vec2_t mouse_position(window_s* window_p);

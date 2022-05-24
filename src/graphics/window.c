@@ -1,5 +1,5 @@
-#include "api/pch.h"
-#include "api/graphics/graphics.h"
+#include "pch.h"
+#include "graphics/graphics.h"
 
 void window_init(window_s* window_p)
 {
@@ -53,14 +53,14 @@ void window_exit(window_s* window_p)
 }
 
 //Input
-int key_pressed(window_s* window_p, key key)
+bool key_pressed(window_s* window_p, key key)
 {
     if(glfwGetKey(window_p->glfw, key) == GLFW_PRESS)
         return 1;
     return 0;
 }
 
-int mouse_button_pressed(window_s* window_p, mouse_button button)
+bool mouse_button_pressed(window_s* window_p, mouse_button button)
 {
     if(glfwGetMouseButton(window_p->glfw, button) == GLFW_PRESS)
         return 1;
