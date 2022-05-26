@@ -1,15 +1,16 @@
-#include "pch.h"
-#include "graphics/graphics.h"
+#include "graphics/window.h"
+#include "graphics/renderer.h"
 
 void renderer_init(renderer_s *renderer)
 {
-    // glEnable(GL_DEPTH_TEST);
-    // glDepthFunc(GL_LESS);
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
     // glEnable(GL_MULTISAMPLE);
+    glEnable(GL_FRAMEBUFFER_SRGB);
 
     renderer->index_count = 0;
     renderer->tex_slot_count = 1;
@@ -47,18 +48,18 @@ void renderer_init(renderer_s *renderer)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_t), (void *)offsetof(vertex_t, pos));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex_t), (const void *)offsetof(vertex_t, color));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex_t), (void *)offsetof(vertex_t, color));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_t), (const void *)offsetof(vertex_t, uv));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_t), (void *)offsetof(vertex_t, uv));
     glEnableVertexAttribArray(2);
 
-    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(vertex_t), (const void *)offsetof(vertex_t, tex_index));
+    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(vertex_t), (void *)offsetof(vertex_t, tex_index));
     glEnableVertexAttribArray(3);
 
     // create white texture
     texture_t white_tex;
-    white_tex.size.x= 1;
+    white_tex.size.x = 1;
     white_tex.size.y = 1;
     unsigned char white[4] = {255, 255, 255, 255};
     white_tex.data = white;
@@ -89,11 +90,11 @@ void renderer_init(renderer_s *renderer)
     if (!succ)
     {
         glGetShaderInfoLog(v_shader, 512, NULL, log);
-        printf(LOG_ERROR"[shader]: %s\n", log);
+        printf(LOG_ERROR "[shader]: %s\n", log);
         exit(-1);
     }
     else
-        printf(LOG_INFO"[renderer]: compiled vertex shader succesfully!\n");
+        printf(LOG_INFO "[renderer]: compiled vertex shader succesfully!\n");
 
     uint32_t f_shader;
     f_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -104,11 +105,11 @@ void renderer_init(renderer_s *renderer)
     if (!succ)
     {
         glGetShaderInfoLog(f_shader, 512, NULL, log);
-        printf(LOG_ERROR"[shader]:%s\n", log);
+        printf(LOG_ERROR "[shader]:%s\n", log);
         exit(-1);
     }
     else
-        printf(LOG_INFO"[renderer]: compiled fragment shader succesfully!\n");
+        printf(LOG_INFO "[renderer]: compiled fragment shader succesfully!\n");
 
     renderer->shader = glCreateProgram();
     glAttachShader(renderer->shader, v_shader);
@@ -121,11 +122,11 @@ void renderer_init(renderer_s *renderer)
     if (!succ)
     {
         glGetProgramInfoLog(renderer->shader, 512, NULL, log);
-        printf(LOG_ERROR"[shader]: %s\n", log);
+        printf(LOG_ERROR "[shader]: %s\n", log);
         exit(-1);
     }
     else
-        printf(LOG_INFO"[renderer]: made shader program succesfully!\n");
+        printf(LOG_INFO "[renderer]: made shader program succesfully!\n");
 
     glUseProgram(renderer->shader);
 
@@ -133,18 +134,12 @@ void renderer_init(renderer_s *renderer)
     int loc = glGetUniformLocation(renderer->shader, "u_textures");
     glUniform1iv(loc, 16, samplers);
 }
-void renderer_start(renderer_s *renderer)
-{
-    renderer->vertex_buffer_ptr = renderer->vertex_buffer;
-    renderer->index_count = 0;
-    renderer->tex_slot_count = 1;
-}
-void renderer_end(renderer_s *renderer)
+void renderer_update(renderer_s *renderer)
 {
     int loc = glGetUniformLocation(renderer->shader, "u_view_mat");
     if (loc == -1)
     {
-        printf(LOG_ERROR"[renderer]: no uniform with name %s found!\n", "u_view_mat");
+        printf(LOG_ERROR "[renderer]: no uniform with name %s found!\n", "u_view_mat");
         exit(-1);
     }
     glUniformMatrix4fv(loc, 1, GL_TRUE, &renderer->view_mat.data[0][0]);
@@ -152,17 +147,26 @@ void renderer_end(renderer_s *renderer)
     loc = glGetUniformLocation(renderer->shader, "u_proj_mat");
     if (loc == -1)
     {
-        printf(LOG_ERROR"[renderer]: no uniform with name %s found!\n", "u_proj_mat");
+        printf(LOG_ERROR "[renderer]: no uniform with name %s found!\n", "u_proj_mat");
         exit(-1);
     }
     glUniformMatrix4fv(loc, 1, GL_TRUE, &renderer->proj_mat.data[0][0]);
-    
+
+    glClearColor(renderer->clear_color.x, renderer->clear_color.y, renderer->clear_color.z, renderer->clear_color.w);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void renderer_batch_start(renderer_s *renderer)
+{
+    renderer->vertex_buffer_ptr = renderer->vertex_buffer;
+    renderer->index_count = 0;
+    renderer->tex_slot_count = 1;
+}
+void renderer_batch_end(renderer_s *renderer)
+{
     uint32_t size = (uint8_t *)renderer->vertex_buffer_ptr - (uint8_t *)renderer->vertex_buffer;
     glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, renderer->vertex_buffer);
-
-    glClearColor(renderer->clear_color.x, renderer->clear_color.y, renderer->clear_color.z, renderer->clear_color.w);
-    glClear(GL_COLOR_BUFFER_BIT);
 
     for (uint32_t i = 0; i < renderer->tex_slot_count; i++)
     {
@@ -191,18 +195,22 @@ void renderer_exit(renderer_s *renderer)
 }
 
 void renderer_draw_texture(
-    renderer_s *renderer,
-    texture_t *texture_p,
-    sub_texture_t *sub_texture_p,
-    const vec3_t pos,
-    const vec3_t size,
-    const vec4_t color)
+    renderer_s* renderer, 
+    texture_t* texture, 
+    vec3_t pos, 
+    vec3_t size,
+    vec4_t color)
 {
+    if (renderer->index_count >= renderer->max_quad_count * 6 || renderer->tex_slot_count >= 16)
+    {
+        renderer_batch_end(renderer);
+        renderer_batch_start(renderer);
+    }
     float tex_index = 0.0f;
 
     for (uint32_t i = 0; i < renderer->tex_slot_count; i++)
     {
-        if (renderer->tex_slots[i].id == texture_p->id)
+        if (renderer->tex_slots[i].id == texture->id)
         {
             tex_index = (float)i;
             break;
@@ -212,38 +220,105 @@ void renderer_draw_texture(
     if (tex_index == 0.0f)
     {
         tex_index = (float)renderer->tex_slot_count;
-        renderer->tex_slots[renderer->tex_slot_count] = *texture_p;
+        renderer->tex_slots[renderer->tex_slot_count] = *texture;
         renderer->tex_slot_count += 1;
     }
 
     renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x - (size.x / 2), pos.y - (size.y / 2), pos.z};
     renderer->vertex_buffer_ptr->color = color;
-    renderer->vertex_buffer_ptr->uv = sub_texture_p->uv[0];
+    renderer->vertex_buffer_ptr->uv = (vec2_t){0.0f, 0.0f};
     renderer->vertex_buffer_ptr->tex_index = tex_index;
     renderer->vertex_buffer_ptr++;
 
     renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x + (size.x / 2), pos.y - (size.y / 2), pos.z};
     renderer->vertex_buffer_ptr->color = color;
-    renderer->vertex_buffer_ptr->uv = sub_texture_p->uv[1];
+    renderer->vertex_buffer_ptr->uv = (vec2_t){1.0f, 0.0f};
     renderer->vertex_buffer_ptr->tex_index = tex_index;
     renderer->vertex_buffer_ptr++;
 
     renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x + (size.x / 2), pos.y + (size.y / 2), pos.z};
     renderer->vertex_buffer_ptr->color = color;
-    renderer->vertex_buffer_ptr->uv = sub_texture_p->uv[2];
+    renderer->vertex_buffer_ptr->uv = (vec2_t){1.0f, 1.0f};
     renderer->vertex_buffer_ptr->tex_index = tex_index;
     renderer->vertex_buffer_ptr++;
 
     renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x - (size.x / 2), pos.y + (size.y / 2), pos.z};
     renderer->vertex_buffer_ptr->color = color;
-    renderer->vertex_buffer_ptr->uv = sub_texture_p->uv[3];
+    renderer->vertex_buffer_ptr->uv = (vec2_t){0.0f, 1.0f};
     renderer->vertex_buffer_ptr->tex_index = tex_index;
     renderer->vertex_buffer_ptr++;
     renderer->index_count += 6;
 }
 
-void renderer_draw_quad(renderer_s *renderer, const vec3_t pos, const vec3_t size, const vec4_t color)
+void renderer_draw_sub_texture(
+    renderer_s *renderer,
+    texture_t *texture,
+    sub_texture_t *sub_texture,
+    vec3_t pos,
+    vec3_t size,
+    vec4_t color)
 {
+    if (renderer->index_count >= renderer->max_quad_count * 6 || renderer->tex_slot_count >= 16)
+    {
+        renderer_batch_end(renderer);
+        renderer_batch_start(renderer);
+    }
+    float tex_index = 0.0f;
+
+    for (uint32_t i = 0; i < renderer->tex_slot_count; i++)
+    {
+        if (renderer->tex_slots[i].id == texture->id)
+        {
+            tex_index = (float)i;
+            break;
+        }
+    }
+
+    if (tex_index == 0.0f)
+    {
+        tex_index = (float)renderer->tex_slot_count;
+        renderer->tex_slots[renderer->tex_slot_count] = *texture;
+        renderer->tex_slot_count += 1;
+    }
+
+    renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x - (size.x / 2), pos.y - (size.y / 2), pos.z};
+    renderer->vertex_buffer_ptr->color = color;
+    renderer->vertex_buffer_ptr->uv = sub_texture->uv[0];
+    renderer->vertex_buffer_ptr->tex_index = tex_index;
+    renderer->vertex_buffer_ptr++;
+
+    renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x + (size.x / 2), pos.y - (size.y / 2), pos.z};
+    renderer->vertex_buffer_ptr->color = color;
+    renderer->vertex_buffer_ptr->uv = sub_texture->uv[1];
+    renderer->vertex_buffer_ptr->tex_index = tex_index;
+    renderer->vertex_buffer_ptr++;
+
+    renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x + (size.x / 2), pos.y + (size.y / 2), pos.z};
+    renderer->vertex_buffer_ptr->color = color;
+    renderer->vertex_buffer_ptr->uv = sub_texture->uv[2];
+    renderer->vertex_buffer_ptr->tex_index = tex_index;
+    renderer->vertex_buffer_ptr++;
+
+    renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x - (size.x / 2), pos.y + (size.y / 2), pos.z};
+    renderer->vertex_buffer_ptr->color = color;
+    renderer->vertex_buffer_ptr->uv = sub_texture->uv[3];
+    renderer->vertex_buffer_ptr->tex_index = tex_index;
+    renderer->vertex_buffer_ptr++;
+    renderer->index_count += 6; 
+}
+
+void renderer_draw_quad(
+    renderer_s *renderer,
+    vec3_t pos,
+    vec3_t size,
+    vec4_t color)
+{
+    if (renderer->index_count >= renderer->max_quad_count * 6 || renderer->tex_slot_count >= 16)
+    {
+        renderer_batch_end(renderer);
+        renderer_batch_start(renderer);
+    }
+
     float tex_index = 0.0f;
     vec2_t no_uv = {0.0f, 0.0f};
     renderer->vertex_buffer_ptr->pos = (vec3_t){pos.x - (size.x / 2), pos.y - (size.y / 2), pos.z};
@@ -293,7 +368,7 @@ const char *glsl_load_from_file(const char *path)
     }
     else
     {
-        printf(LOG_ERROR"[texture]: failed to open file: %s\n", path);
+        printf(LOG_ERROR "[texture]: failed to open file: %s\n", path);
         exit(-1);
     }
 
@@ -301,7 +376,7 @@ const char *glsl_load_from_file(const char *path)
         return buffer;
     else
     {
-        printf(LOG_ERROR"[texture]: failed write file to string!\n");
+        printf(LOG_ERROR "[texture]: failed write file to string!\n");
         exit(-1);
     }
 }

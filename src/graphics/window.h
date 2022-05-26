@@ -8,9 +8,9 @@ typedef struct
     GLFWwindow* glfw;
 }window_s;
 
-void window_init(window_s* window_p);
-void window_update(window_s* window_p);
-void window_exit(window_s* window_p);
+void window_init(window_s* window);
+void window_update(window_s* window);
+void window_exit(window_s* window);
 
 typedef enum key
 {
@@ -152,6 +152,6 @@ typedef enum mouse_button
     MOUSE_BUTTON_MIDDLE  =  MOUSE_BUTTON_3
 }mouse_button;
 
-bool key_pressed(window_s* window_p, key key);
-bool mouse_button_pressed(window_s* window_p, mouse_button button);
-vec2_t mouse_position(window_s* window_p);
+bool key_pressed(window_s* window, key key);
+bool mouse_button_pressed(window_s* window, mouse_button button);
+vec2_t mouse_position(window_s* window);

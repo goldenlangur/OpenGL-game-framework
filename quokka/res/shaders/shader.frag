@@ -13,9 +13,9 @@ void main()
 {
     //color = v_color;
     vec4 tex_color = texture(u_textures[int(v_tex)], v_uv) * v_color;
-    color = tex_color;
+    if(tex_color.a < 0.1)
+        discard;
 
-    float gamma = 2.2;
-    color.rgb = pow(color.rgb, vec3(1.0/gamma));
-    //color.a = texture(u_textures[int(v_tex)], v_uv).a;    
+    color = tex_color;
+    //color = vec4(vec3(gl_FragCoord.z),
 }

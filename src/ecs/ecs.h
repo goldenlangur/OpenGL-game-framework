@@ -1,7 +1,6 @@
 #pragma once
-#include "graphics/graphics.h"
 
-#define MAX_ENTITIES 2
+#define MAX_ENTITIES 100
 // Entity Component System
 typedef unsigned int entity_t;
 

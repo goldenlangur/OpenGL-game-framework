@@ -11,6 +11,8 @@ typedef struct
 typedef struct 
 {
     vec2_t uv[4];
+    vec2_t tex_size;
+    vec2_t sub_tex_size;
 }sub_texture_t;
 
 typedef struct
@@ -48,29 +50,40 @@ typedef struct
 
 
 void renderer_init(renderer_s* renderer);
-void renderer_start(renderer_s* renderer);
-void renderer_end(renderer_s* renderer);
+void renderer_update(renderer_s* renderer);
+void renderer_batch_start(renderer_s* renderer);
+void renderer_batch_end(renderer_s* renderer);
+
 void renderer_exit(renderer_s* renderer);
+
+void renderer_draw_sub_texture(
+    renderer_s* renderer, 
+    texture_t* texture, 
+    sub_texture_t* sub_texture, 
+    vec3_t pos, 
+    vec3_t size,
+    vec4_t color);
 
 void renderer_draw_texture(
     renderer_s* renderer, 
     texture_t* texture, 
-    sub_texture_t* sub_texture, 
-    const vec3_t pos, 
-    const vec3_t size,
-    const vec4_t color);
+    vec3_t pos, 
+    vec3_t size,
+    vec4_t color);
+
 
 void renderer_draw_quad(
     renderer_s* renderer, 
-    const vec3_t pos, 
-    const vec3_t size, 
-    const vec4_t color);
+    vec3_t pos, 
+    vec3_t size, 
+    vec4_t color);
 
 
 texture_t texture_create_from_file(const char* path);
 texture_t texture_create_from_data(unsigned char* data, vec2_t size);
+void texture_update_data(texture_t* texture, unsigned char* data, vec2_t size);
 
-sub_texture_t sub_texture_create(vec2_t tex_size, vec2_t coords, vec2_t tilesize);
+sub_texture_t sub_texture_create(vec2_t tex_size, vec2_t coords, vec2_t sub_tex_size);
 
 const char* glsl_load_from_file(const char* path);
 

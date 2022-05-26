@@ -61,9 +61,8 @@ void ecs_delete_entity(ecs_s *ecs, entity_t *entity)
     {
         ecs_reset_entity_values(ecs, *entity);
         *entity = 0;
-        ecs->entity_count -= 1; 
+        ecs->entity_count -= 1;
     }
-
 }
 
 void ecs_update(ecs_s *ecs, window_s *window, renderer_s *renderer)
@@ -74,18 +73,35 @@ void ecs_update(ecs_s *ecs, window_s *window, renderer_s *renderer)
         {
             float aspect = (float)window->size.x / (float)window->size.y;
 
-            renderer->proj_mat = mat4_ortho_aspect(aspect, ecs->camera_components[i].ortho_size, 1000.0f, 1.0f);
-            renderer->view_mat = mat4_translate(mat4_new(1.0f), (vec3_t){0.0f, 0.0f, 0.0f});
+            renderer->proj_mat = mat4_ortho_aspect(aspect, ecs->camera_components[i].ortho_size, -10.0f, 10.0f);
+            renderer->view_mat = mat4_translate(mat4_new(1.0f), (vec3_t){-ecs->transform_components[i].position.x, -ecs->transform_components[i].position.y, 0});
         }
 
         if (ecs->sprite_components[i].active)
         {
             if (ecs->sprite_components[i].texture != NULL && ecs->sprite_components[i].sub_texture != NULL)
             {
-                renderer_draw_texture(
+                ecs->transform_components[i].position = (vec3_t){
+                    round(ecs->transform_components[i].position.x * ecs->sprite_components[i].sub_texture->sub_tex_size.x) / ecs->sprite_components[i].sub_texture->sub_tex_size.x, 
+                    round(ecs->transform_components[i].position.y * ecs->sprite_components[i].sub_texture->sub_tex_size.x) / ecs->sprite_components[i].sub_texture->sub_tex_size.x, 
+                    ecs->transform_components[i].position.z};
+                renderer_draw_sub_texture(
                     renderer,
                     ecs->sprite_components[i].texture,
                     ecs->sprite_components[i].sub_texture,
+                    ecs->transform_components[i].position,
+                    ecs->transform_components[i].scale,
+                    ecs->sprite_components[i].tint_color);
+            }
+            else if (ecs->sprite_components[i].texture != NULL && ecs->sprite_components[i].sub_texture == NULL)
+            {
+                ecs->transform_components[i].position = (vec3_t){
+                    round(ecs->transform_components[i].position.x * ecs->sprite_components[i].texture->size.x) / ecs->sprite_components[i].texture->size.x, 
+                    round(ecs->transform_components[i].position.y * ecs->sprite_components[i].texture->size.x) / ecs->sprite_components[i].texture->size.x, 
+                    ecs->transform_components[i].position.z};
+                renderer_draw_texture(
+                    renderer,
+                    ecs->sprite_components[i].texture,
                     ecs->transform_components[i].position,
                     ecs->transform_components[i].scale,
                     ecs->sprite_components[i].tint_color);
@@ -99,7 +115,7 @@ void ecs_update(ecs_s *ecs, window_s *window, renderer_s *renderer)
                     ecs->sprite_components[i].tint_color);
             }
         }
-    } 
+    }
 }
 
 void ecs_exit(ecs_s *ecs)

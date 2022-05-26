@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "graphics/graphics.h"
+#include "graphics/renderer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
@@ -43,8 +43,7 @@ texture_t texture_create_from_data(unsigned char* data, vec2_t size)
 {
     if(data == NULL)
     {
-        printf(LOG_ERROR"[texture]: data is empty!\n");
-        exit(-1);
+        printf(LOG_WARNING"[texture]: data is empty!\n");
     }
     texture_t texture;
     texture.size = size;
@@ -61,15 +60,27 @@ texture_t texture_create_from_data(unsigned char* data, vec2_t size)
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, texture.size.x, texture.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.data);
     glGenerateMipmap(GL_TEXTURE_2D);
+
     return texture;
 }
 
-sub_texture_t sub_texture_create(vec2_t tex_size, vec2_t coords, vec2_t tilesize)
+void texture_update_data(texture_t* texture, unsigned char* data, vec2_t size)
 {
-    vec2_t min = {(coords.x * tilesize.x) / tex_size.x, (coords.y * tilesize.y) / tex_size.y };
-    vec2_t max = {((coords.x + 1) * tilesize.x) / tex_size.x, ((coords.y + 1) * tilesize.y) / tex_size.y };
+    texture->size = size;
+    texture->data = data;
+    texture->channel_count = 4;
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texture->size.x, texture->size.y, GL_RGBA, GL_UNSIGNED_BYTE, texture->data);
+}
 
+sub_texture_t sub_texture_create(vec2_t tex_size, vec2_t coords, vec2_t sub_tex_size)
+{
     sub_texture_t sub_texture;
+    sub_texture.sub_tex_size = sub_tex_size;
+    sub_texture.tex_size = tex_size;
+
+    vec2_t min = {(coords.x * sub_texture.sub_tex_size.x) / sub_texture.tex_size.x, (coords.y * sub_texture.sub_tex_size.y) / sub_texture.tex_size.y };
+    vec2_t max = {((coords.x + 1) * sub_texture.sub_tex_size.x) / sub_texture.tex_size.x, ((coords.y + 1) * sub_texture.sub_tex_size.y) / sub_texture.tex_size.y };
+
     sub_texture.uv[0] = (vec2_t){min.x, min.y };
     sub_texture.uv[1] = (vec2_t){max.x, min.y };
     sub_texture.uv[2] = (vec2_t){max.x, max.y};
