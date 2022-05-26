@@ -1,7 +1,8 @@
 #include "pch.h"
-#include "graphics/window.h"
+#include "graphics/graphics.h"
 
-void window_init(window_s* window)
+
+void window_init(window_t* window)
 {
     window->closed = 1;
 
@@ -31,42 +32,43 @@ void window_init(window_s* window)
         printf("[ERROR]: Failed to create GLFW window!\n");
     else
         window->closed = 0;
-    
+    window->vsync = 1 ;
+    window->fullscreen = 0;
+    window->minimized = 0;
     glfwSwapInterval(window->vsync);
+    
 }
-void window_update(window_s* window)
+void window_update(window_t* window)
 {
     glfwSwapBuffers(window->glfw);
     glfwPollEvents();
 
     if(glfwWindowShouldClose(window->glfw))
         window->closed = 1;
-
-    if(window->fullscreen)
-        glfwMaximizeWindow(window->glfw);
+    glfwGetWindowSize(window->glfw, (int*)&window->size.x,  (int*)&window->size.y);
 }
-void window_exit(window_s* window)
+void window_exit(window_t* window)
 {
     glfwDestroyWindow(window->glfw);
     glfwTerminate();
 }
 
 //Input
-bool key_pressed(window_s* window, key key)
+bool key_pressed(window_t* window, key key)
 {
     if(glfwGetKey(window->glfw, key) == GLFW_PRESS)
         return 1;
     return 0;
 }
 
-bool mouse_button_pressed(window_s* window, mouse_button button)
+bool mouse_button_pressed(window_t* window, mouse_button button)
 {
     if(glfwGetMouseButton(window->glfw, button) == GLFW_PRESS)
         return 1;
     return 0;
 }
 
-vec2_t mouse_position(window_s* window)
+vec2_t mouse_position(window_t* window)
 {
     vec2_t pos;
     glfwGetCursorPos(window->glfw, (double*)&pos.x, (double*)&pos.y);

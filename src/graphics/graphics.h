@@ -1,16 +1,141 @@
 #pragma once
 
+typedef struct
+{
+    uint32_t id;
+    vec2_t size;
+    int channel_count;
+    unsigned char* data;
+}texture_t;
+
+texture_t texture_create_from_file(const char* path);
+texture_t texture_create_from_data(unsigned char* data, vec2_t size);
+void texture_bind(texture_t* texture, uint32_t index);
+void texture_delete(texture_t* texture);
+void texture_update_data(texture_t* texture, unsigned char* data, vec2_t size);
+
+typedef struct 
+{
+    vec2_t uv[4];
+    vec2_t tex_size;
+    vec2_t sub_tex_size;
+}sub_texture_t;
+
+sub_texture_t sub_texture_create(vec2_t tex_size, vec2_t coords, vec2_t sub_tex_size);
+
+typedef struct
+{
+    uint32_t id;
+    const char* v_src;
+    const char* f_src;
+}shader_t;
+
+shader_t shader_create(const char* vert_file_path, const char* frag_file_path);
+void shader_bind(shader_t* shader);
+void shader_delete(shader_t* shader);
+void shader_set_uniform_mat4(shader_t* shader, const char* name, mat4_t matrix);
+void shader_set_uniform_int_arr(shader_t* shader, const char* name, int* data, uint32_t count);
+const char* glsl_load_from_file(const char* path);
+
+typedef struct
+{
+    uint32_t vbo;
+    uint32_t vao;
+    uint32_t ibo;
+}vertex_array_t;
+
+vertex_array_t vertex_array_create(void* vertices, size_t vertices_size, void* indices, size_t indices_size, bool dynamic);
+void vertex_array_push_attribute(uint32_t index, uint32_t size, size_t stride, size_t offset);
+void vertex_array_bind(vertex_array_t* vertex_array);
+void vertex_array_delete(vertex_array_t* vertex_array);
+
+void vertex_array_push_vertex_data(size_t size, void* data);
+void vertex_array_push_index_data(size_t size, void* data);
+
+typedef struct 
+{
+    uint32_t id;
+    texture_t texture;
+}framebuffer_t;
+
+#define MAX_QUAD_COUNT 10000
+#define MAX_TEXTURE_COUNT 16
+
+typedef struct
+{
+    vec3_t pos;
+    vec4_t color;
+    vec2_t uv;
+    float tex_index;
+}quad_vertex_t;
+
+typedef struct 
+{
+    /* data */
+}quad_batch_t;
+
+typedef struct 
+{
+    vec4_t clear_color;
+
+    mat4_t view_mat;
+    mat4_t proj_mat;
+
+    uint32_t quad_indices[MAX_QUAD_COUNT * 6];
+    uint32_t quad_index_count;
+    quad_vertex_t quad_vertices[MAX_QUAD_COUNT * 4];
+    quad_vertex_t* quad_vertices_p;
+
+    texture_t quad_textures[MAX_TEXTURE_COUNT];
+    uint32_t quad_texture_count;
+
+    shader_t quad_shader;
+    vertex_array_t quad_vertex_array;
+}renderer_t;
+
+
+/* renderer_t renderer_create(vec4_t clear_color,  vec2_t resolution, )  */
+void renderer_init(renderer_t* renderer);
+void renderer_clear(renderer_t* renderer);
+void renderer_draw_elements(renderer_t* renderer, uint32_t index_count);
+void renderer_batch_start(renderer_t* renderer);
+void renderer_batch_end(renderer_t* renderer);
+
+void renderer_exit(renderer_t* renderer);
+
+void renderer_draw_sub_texture(
+    renderer_t* renderer, 
+    texture_t* texture, 
+    sub_texture_t* sub_texture, 
+    vec3_t pos, 
+    vec3_t size,
+    vec4_t color);
+
+void renderer_draw_texture(
+    renderer_t* renderer, 
+    texture_t* texture, 
+    vec3_t pos, 
+    vec3_t size,
+    vec4_t color);
+
+
+void renderer_draw_quad(
+    renderer_t* renderer, 
+    vec3_t pos, 
+    vec3_t size, 
+    vec4_t color);
+
 typedef struct 
 {
     const char* title;
     vec2_t size;
     bool closed, minimized, fullscreen, vsync;
     GLFWwindow* glfw;
-}window_s;
+}window_t;
 
-void window_init(window_s* window);
-void window_update(window_s* window);
-void window_exit(window_s* window);
+void window_init(window_t* window);
+void window_update(window_t* window);
+void window_exit(window_t* window);
 
 typedef enum key
 {
@@ -58,12 +183,12 @@ typedef enum key
     KEY_X                =  88,
     KEY_Y                =  89,
     KEY_Z                =  90,
-    KEY_LEFT_BRACKET     =  91,  /* [ */
-    KEY_BACKSLASH        =  92,  /* \ */
-    KEY_RIGHT_BRACKET    =  93,  /* ] */
-    KEY_GRAVE_ACCENT     =  96,  /* ` */
-    KEY_WORLD_1          =  161, /* non-US #1 */
-    KEY_WORLD_2          =  162, /* non-US #2 */
+    KEY_LEFT_BRACKET     =  91,  
+    KEY_BACKSLASH        =  92,  
+    KEY_RIGHT_BRACKET    =  93,  
+    KEY_GRAVE_ACCENT     =  96,  
+    KEY_WORLD_1          =  161,
+    KEY_WORLD_2          =  162, 
 
     KEY_ESCAPE           =  256,
     KEY_ENTER            =  257,
@@ -152,6 +277,6 @@ typedef enum mouse_button
     MOUSE_BUTTON_MIDDLE  =  MOUSE_BUTTON_3
 }mouse_button;
 
-bool key_pressed(window_s* window, key key);
-bool mouse_button_pressed(window_s* window, mouse_button button);
-vec2_t mouse_position(window_s* window);
+bool key_pressed(window_t* window, key key);
+bool mouse_button_pressed(window_t* window, mouse_button button);
+vec2_t mouse_position(window_t* window);

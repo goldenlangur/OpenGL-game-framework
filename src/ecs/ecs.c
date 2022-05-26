@@ -1,7 +1,7 @@
 #include "api.h"
 #include "ecs/ecs.h"
 
-void ecs_init(ecs_s *ecs)
+void ecs_init(ecs_t *ecs)
 {
     ecs->entity_count = 0;
     for (entity_t e = 0; e <= MAX_ENTITIES; e++)
@@ -10,7 +10,7 @@ void ecs_init(ecs_s *ecs)
     }
 }
 
-void ecs_reset_entity_values(ecs_s *ecs, entity_t e)
+void ecs_reset_entity_values(ecs_t *ecs, entity_t e)
 {
     ecs->data_components[e] = (data_component_s){
         .name = NULL,
@@ -30,7 +30,7 @@ void ecs_reset_entity_values(ecs_s *ecs, entity_t e)
         .ortho_size = 1.0f};
 }
 
-entity_t ecs_create_entity(ecs_s *ecs, const char *name)
+entity_t ecs_create_entity(ecs_t *ecs, const char *name)
 {
     unsigned int e = 0;
 
@@ -55,7 +55,7 @@ entity_t ecs_create_entity(ecs_s *ecs, const char *name)
     return e;
 }
 
-void ecs_delete_entity(ecs_s *ecs, entity_t *entity)
+void ecs_delete_entity(ecs_t *ecs, entity_t *entity)
 {
     if (entity != 0)
     {
@@ -65,7 +65,7 @@ void ecs_delete_entity(ecs_s *ecs, entity_t *entity)
     }
 }
 
-void ecs_update(ecs_s *ecs, window_s *window, renderer_s *renderer)
+void ecs_update(ecs_t *ecs, window_t *window, renderer_t *renderer)
 {
     for (unsigned int i = 1; i <= ecs->entity_count; i++)
     {
@@ -118,7 +118,7 @@ void ecs_update(ecs_s *ecs, window_s *window, renderer_s *renderer)
     }
 }
 
-void ecs_exit(ecs_s *ecs)
+void ecs_exit(ecs_t *ecs)
 {
     for (entity_t e = 0; e <= MAX_ENTITIES + 1; e++)
     {

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "graphics/renderer.h"
+#include "graphics/graphics.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
@@ -32,7 +32,7 @@ texture_t texture_create_from_file(const char* path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, texture.size.x, texture.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.size.x, texture.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.data);
     glGenerateMipmap(GL_TEXTURE_2D);
     
     free(texture.data);
@@ -70,6 +70,17 @@ void texture_update_data(texture_t* texture, unsigned char* data, vec2_t size)
     texture->data = data;
     texture->channel_count = 4;
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texture->size.x, texture->size.y, GL_RGBA, GL_UNSIGNED_BYTE, texture->data);
+}
+
+void texture_bind(texture_t* texture, uint32_t index)
+{
+    glActiveTexture(GL_TEXTURE0 + index);
+    glBindTexture(GL_TEXTURE_2D, texture->id);
+}
+
+void texture_delete(texture_t* texture)
+{
+    glDeleteTextures(1, &texture->id);
 }
 
 sub_texture_t sub_texture_create(vec2_t tex_size, vec2_t coords, vec2_t sub_tex_size)

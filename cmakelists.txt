@@ -15,8 +15,10 @@ src/ecs/ecs.c
 src/math/math.c
 
 src/graphics/window.c
+src/graphics/vertexarray.c
 src/graphics/renderer.c
 src/graphics/texture.c
+src/graphics/shader.c
 )
 
 target_link_libraries(quokka 

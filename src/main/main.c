@@ -2,9 +2,9 @@
 
 typedef struct
 {
-    window_s window;
-    renderer_s renderer;
-    ecs_s ecs;
+    window_t window;
+    renderer_t renderer;
+    ecs_t ecs;
 
     float dt;
     float fps;
@@ -15,17 +15,16 @@ typedef struct
 int main()
 {
     game_s game;
-    game.window = (window_s)
+    game.window = (window_t)
     {
         .size = (vec2_t){800, 800},
-        .title = "game",
-        .vsync = 1
+        .title = "game"
     };
     window_init(&game.window);
 
-    game.renderer = (renderer_s){
-        .clear_color = (vec4_t){.0f, .0f, .0f, 1.0f},
-        .max_quad_count = 20000
+    game.renderer = (renderer_t)
+    {
+        .clear_color = (vec4_t){.0f, .0f, .0f, 1.0f}
     };
     renderer_init(&game.renderer);
     ecs_init(&game.ecs);
@@ -39,7 +38,7 @@ int main()
     {   
         last_time = glfwGetTime();
         window_update(&game.window);
-        renderer_update(&game.renderer);
+        renderer_clear(&game.renderer);
         game_loop_update(&game);
         renderer_batch_start(&game.renderer);
         ecs_update(&game.ecs, &game.window, &game.renderer);

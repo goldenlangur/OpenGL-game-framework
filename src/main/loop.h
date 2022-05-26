@@ -23,15 +23,15 @@ void game_loop_init(game_s *game)
     texture_map = texture_create_from_file("res/textures/hornet.png");
     sub_texture_1 = sub_texture_create((vec2_t){64, 64}, (vec2_t){0, 1}, (vec2_t){16, 32});
 
-   /*  for (int i = 0; i < SIZE * SIZE * 4; i += 4)
+    for (int i = 0; i < SIZE * SIZE * 4; i += 4)
     {
-        noise_texture_data[i + 0] = rand() % 255;
-        noise_texture_data[i + 1] = rand() % 255;
-        noise_texture_data[i + 2] = rand() % 255;
+        noise_texture_data[i + 0] = (rand() % 2 * 255);
+        noise_texture_data[i + 1] = 255;
+        noise_texture_data[i + 2] = (rand() % 2 * 255);
         noise_texture_data[i + 3] = 255;
-    } */
+    } 
 
-    noise_texture = texture_create_from_data(NULL, (vec2_t){SIZE, SIZE});
+    noise_texture = texture_create_from_data(noise_texture_data, (vec2_t){SIZE, SIZE});
 
     player = ecs_create_entity(&game->ecs, "player");
     game->ecs.transform_components[player].scale = (vec3_t){1.0f, 2.0f, 1.0f};
@@ -50,12 +50,12 @@ void game_loop_init(game_s *game)
     game->ecs.sprite_components[noise_entity].active = true;
     game->ecs.transform_components[noise_entity].scale = (vec3_t){8.0f, 8.0f, 1.0f};
     game->ecs.transform_components[noise_entity].position.z = 0;
-    game->ecs.sprite_components[noise_entity].texture = &noise_texture;
+    game->ecs.sprite_components[noise_entity].texture = &noise_texture; 
 }
 
 void game_loop_update(game_s *game)
 {
-    static int count = 0;
+    /* static int count = 0;
     count++;
     if (count > 10)
         count = 0;
@@ -70,7 +70,7 @@ void game_loop_update(game_s *game)
             noise_texture_data[i + 3] = 255;
         }
     }
-    texture_update_data(&noise_texture, noise_texture_data, noise_texture.size);
+    texture_update_data(&noise_texture, noise_texture_data, noise_texture.size); */
 
     float speed = 10.0 * game->dt;
     if(key_pressed(&game->window, KEY_D))
@@ -96,7 +96,7 @@ void game_loop_update(game_s *game)
         game->ecs.camera_components[camera].ortho_size -= 10.f * game->ecs.camera_components[camera].ortho_size *game->dt;
     if (key_pressed(&game->window, KEY_LEFT_SHIFT))
         game->ecs.camera_components[camera].ortho_size += 10.f * game->ecs.camera_components[camera].ortho_size *game->dt;
-
+ 
     static int fps_time = 0;
     fps_time++;
     if (fps_time > game->fps)

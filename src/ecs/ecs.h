@@ -47,12 +47,12 @@ typedef struct
     transform_component_s transform_components[MAX_ENTITIES + 1];
     sprite_component_s sprite_components[MAX_ENTITIES + 1];
     camera_component_s camera_components[MAX_ENTITIES + 1];
-} ecs_s;
+} ecs_t;
 
-void ecs_reset_entity_values(ecs_s *ecs, entity_t e);
-void ecs_init(ecs_s *ecs);
-void ecs_update(ecs_s *ecs, window_s* window, renderer_s* renderer);
-void ecs_exit(ecs_s *ecs);
+void ecs_reset_entity_values(ecs_t *ecs, entity_t e);
+void ecs_init(ecs_t *ecs);
+void ecs_update(ecs_t *ecs, window_t* window, renderer_t* renderer);
+void ecs_exit(ecs_t *ecs);
 
-entity_t ecs_create_entity(ecs_s *ecs, const char *name);
-void ecs_delete_entity(ecs_s *ecs, entity_t *entity);
+entity_t ecs_create_entity(ecs_t *ecs, const char *name);
+void ecs_delete_entity(ecs_t *ecs, entity_t *entity);
