@@ -19,6 +19,7 @@ src/graphics/vertexarray.c
 src/graphics/renderer.c
 src/graphics/texture.c
 src/graphics/shader.c
+src/graphics/framebuffer.c
 )
 
 target_link_libraries(quokka 

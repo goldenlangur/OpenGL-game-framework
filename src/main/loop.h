@@ -9,6 +9,7 @@ entity_t noise_entity;
 
 texture_t texture_map;
 sub_texture_t sub_texture_1;
+sub_texture_t sub_texture_2;
 
 texture_t noise_texture;
 
@@ -22,16 +23,6 @@ void game_loop_init(game_s *game)
 {
     texture_map = texture_create_from_file("res/textures/hornet.png");
     sub_texture_1 = sub_texture_create((vec2_t){64, 64}, (vec2_t){0, 1}, (vec2_t){16, 32});
-
-    for (int i = 0; i < SIZE * SIZE * 4; i += 4)
-    {
-        noise_texture_data[i + 0] = (rand() % 2 * 255);
-        noise_texture_data[i + 1] = 255;
-        noise_texture_data[i + 2] = (rand() % 2 * 255);
-        noise_texture_data[i + 3] = 255;
-    } 
-
-    noise_texture = texture_create_from_data(noise_texture_data, (vec2_t){SIZE, SIZE});
 
     player = ecs_create_entity(&game->ecs, "player");
     game->ecs.transform_components[player].scale = (vec3_t){1.0f, 2.0f, 1.0f};
@@ -72,7 +63,7 @@ void game_loop_update(game_s *game)
     }
     texture_update_data(&noise_texture, noise_texture_data, noise_texture.size); */
 
-    float speed = 10.0 * game->dt;
+    /* float speed = 10.0 * game->dt;
     if(key_pressed(&game->window, KEY_D))
     {
         game->ecs.transform_components[player].position.x += speed;
@@ -103,7 +94,7 @@ void game_loop_update(game_s *game)
     {
         fps_time = 0;
         printf("FPS: %f - mili: %f\n", game->fps, 1.0f/game->fps);
-    }
+    } */
 }
 void game_loop_exit(game_s *game)
 {

@@ -47,5 +47,5 @@ void vertex_array_push_vertex_data(size_t size, void* data)
 }
 void vertex_array_push_index_data(size_t size, void* data)
 {   
-    glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
 }

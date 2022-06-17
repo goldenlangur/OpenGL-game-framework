@@ -58,9 +58,10 @@ texture_t texture_create_from_data(unsigned char* data, vec2_t size)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, texture.size.x, texture.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.size.x, texture.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.data);
     glGenerateMipmap(GL_TEXTURE_2D);
-
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
     return texture;
 }
 

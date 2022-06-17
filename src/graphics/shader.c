@@ -2,6 +2,7 @@
 
 shader_t shader_create(const char *vert_file_path, const char *frag_file_path)
 {
+    printf("Bruh\n");
     // load shaders
     shader_t shader;
     shader.v_src = glsl_load_from_file(vert_file_path);
@@ -22,7 +23,7 @@ shader_t shader_create(const char *vert_file_path, const char *frag_file_path)
         exit(-1);
     }
     else
-        printf(LOG_INFO "[renderer]: compiled vertex shader succesfully!\n");
+        printf(LOG_INFO "[shader]: compiled vertex shader succesfully!\n");
 
     uint32_t f_shader;
     f_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -37,7 +38,7 @@ shader_t shader_create(const char *vert_file_path, const char *frag_file_path)
         exit(-1);
     }
     else
-        printf(LOG_INFO "[renderer]: compiled fragment shader succesfully!\n");
+        printf(LOG_INFO "[shader]: compiled fragment shader succesfully!\n");
 
     shader.id = glCreateProgram();
     glAttachShader(shader.id, v_shader);
@@ -54,8 +55,9 @@ shader_t shader_create(const char *vert_file_path, const char *frag_file_path)
         exit(-1);
     }
     else
-        printf(LOG_INFO "[renderer]: made shader program succesfully!\n");
+        printf(LOG_INFO "[shader]: made shader program succesfully!\n");
     glUseProgram(shader.id);
+
     return shader;
 }
 void shader_bind(shader_t *shader)
@@ -77,6 +79,17 @@ void shader_set_uniform_mat4(shader_t *shader, const char *name, mat4_t matrix)
     }
     glUniformMatrix4fv(loc, 1, GL_TRUE, &matrix.data[0][0]);
 }
+
+void shader_set_uniform_int(shader_t *shader, const char *name, int data)
+{
+    int loc = glGetUniformLocation(shader->id, name);
+    if (loc == -1)
+    {
+        printf(LOG_ERROR "[shader]: no uniform with name %s found!\n", name);
+        exit(-1);
+    }
+    glUniform1i(loc, data);
+}   
 
 void shader_set_uniform_int_arr(shader_t *shader, const char *name, int *data, uint32_t count)
 {
@@ -108,17 +121,15 @@ const char *glsl_load_from_file(const char *path)
         fclose(f);
         buffer[length] = '\0';
     }
-    else
-    {
-        printf(LOG_ERROR "[texture]: failed to open file: %s\n", path);
-        exit(-1);
-    }
-
     if (buffer)
+    {
+        printf(LOG_INFO "[texture]: successfully opened and read from file: %s\n", path);
+        printf("%s\n", buffer);
         return buffer;
+    }
     else
     {
-        printf(LOG_ERROR "[texture]: failed write file to string!\n");
+        printf(LOG_ERROR "[shader]: failed to open file: %s\n", path);
         exit(-1);
     }
 }
